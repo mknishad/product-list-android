@@ -19,12 +19,16 @@ class ProductPagingSource @Inject constructor(val api: ProductApi) : PagingSourc
 
   override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Product> {
     try {
-      //val nextPageNumber = params.key ?: 1
-      val response = api.getUsers(limit = params.loadSize)
+      val skip = params.key ?: 0
+      val response = api.getUsers(limit = params.loadSize, skip = skip)
       return LoadResult.Page(
         data = response.products.map { it.toProduct() },
         prevKey = null,
-        nextKey = response.products.lastOrNull()?.id
+        nextKey = if (response.products.size + skip < response.total) {
+          skip + params.loadSize
+        } else {
+          null
+        }
       )
     } catch (e: IOException) {
       return LoadResult.Error(e)
@@ -32,4 +36,7 @@ class ProductPagingSource @Inject constructor(val api: ProductApi) : PagingSourc
       return LoadResult.Error(e)
     }
   }
+
+  /*override val keyReuseSupported: Boolean
+    get() = true*/
 }
