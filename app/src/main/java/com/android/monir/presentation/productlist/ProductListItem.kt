@@ -2,6 +2,7 @@ package com.android.monir.presentation.productlist
 
 import android.R.attr.contentDescription
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,9 +12,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -42,19 +45,32 @@ import com.android.monir.domain.model.Product
 fun ProductListItem(product: Product, modifier: Modifier = Modifier) {
   Card(modifier = modifier.fillMaxWidth()) {
     Column {
-      AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-          .data(product.thumbnail)
-          .crossfade(true)
-          .build(),
-        placeholder = painterResource(R.drawable.ic_launcher_foreground),
-        error = painterResource(R.drawable.ic_launcher_foreground),
-        contentDescription = stringResource(R.string.thumbnail),
-        contentScale = ContentScale.Crop,
-        modifier = Modifier
-          .fillMaxWidth()
-          .height(180.dp),
-      )
+      Box(modifier = Modifier.fillMaxWidth()) {
+        AsyncImage(
+          model = ImageRequest.Builder(LocalContext.current)
+            .data(product.thumbnail)
+            .crossfade(true)
+            .build(),
+          placeholder = painterResource(R.drawable.ic_launcher_foreground),
+          error = painterResource(R.drawable.ic_launcher_foreground),
+          contentDescription = stringResource(R.string.thumbnail),
+          contentScale = ContentScale.Crop,
+          modifier = Modifier
+            .fillMaxWidth()
+            .height(180.dp),
+        )
+        Card(
+          modifier = Modifier.align(Alignment.TopEnd).padding(8.dp),
+          shape = RoundedCornerShape(16),
+          colors = CardDefaults.cardColors(containerColor = Color.White),
+        ) {
+          Text(
+            text = product.category,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+          )
+        }
+      }
       Spacer(modifier = Modifier.width(16.dp))
       Row(
         modifier = Modifier
