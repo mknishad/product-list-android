@@ -1,6 +1,9 @@
 package com.android.monir.di
 
 import com.android.monir.data.remote.ProductApi
+import com.android.monir.data.repository.ProductRepositoryImpl
+import com.android.monir.domain.repository.ProductRepository
+import com.android.monir.domain.usecase.GetProductsUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,5 +40,17 @@ object AppModule {
     return Retrofit.Builder().baseUrl(ProductApi.BASE_URL)
       .addConverterFactory(GsonConverterFactory.create()).client(okHttpClient).build()
       .create(ProductApi::class.java)
+  }
+
+  @Provides
+  @Singleton
+  fun provideProductRepository(api: ProductApi): ProductRepository {
+    return ProductRepositoryImpl(api)
+  }
+
+  @Provides
+  @Singleton
+  fun provideGetProductUseCase(repository: ProductRepository): GetProductsUseCase {
+    return GetProductsUseCase(repository)
   }
 }
