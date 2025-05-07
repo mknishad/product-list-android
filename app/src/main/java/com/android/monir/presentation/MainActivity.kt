@@ -16,6 +16,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.android.monir.domain.model.Product
+import com.android.monir.presentation.productlist.ProductListScreen
 import com.android.monir.presentation.productlist.ProductListViewModel
 import com.android.monir.presentation.ui.theme.AndroidMonirTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,34 +28,10 @@ class MainActivity : ComponentActivity() {
     enableEdgeToEdge()
     setContent {
       AndroidMonirTheme {
-        val viewModel: ProductListViewModel = hiltViewModel()
-
-        val productPagingItems: LazyPagingItems<Product> =
-          viewModel.productListState.collectAsLazyPagingItems()
-
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-          Greeting(
-            name = "Android",
-            modifier = Modifier.padding(innerPadding)
-          )
+          ProductListScreen(modifier = Modifier.padding(innerPadding))
         }
       }
     }
-  }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-  Text(
-    text = "Hello $name!",
-    modifier = modifier
-  )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-  AndroidMonirTheme {
-    Greeting("Android")
   }
 }
