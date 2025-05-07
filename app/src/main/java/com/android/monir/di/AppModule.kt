@@ -1,5 +1,6 @@
 package com.android.monir.di
 
+import com.android.monir.data.remote.CacheInterceptor
 import com.android.monir.data.remote.ProductApi
 import com.android.monir.data.repository.ProductRepositoryImpl
 import com.android.monir.domain.repository.ProductRepository
@@ -22,14 +23,24 @@ object AppModule {
 
   @Provides
   @Singleton
+  fun provideCacheInterceptor(): CacheInterceptor {
+    return CacheInterceptor()
+  }
+
+  @Provides
+  @Singleton
   fun provideLoggingInterceptor() = HttpLoggingInterceptor().apply {
     level = HttpLoggingInterceptor.Level.BODY
   }
 
   @Provides
   @Singleton
-  fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
-    OkHttpClient.Builder().addInterceptor(loggingInterceptor)
+  fun provideOkHttpClient(
+    cacheInterceptor: CacheInterceptor,
+    loggingInterceptor: HttpLoggingInterceptor
+  ): OkHttpClient =
+    OkHttpClient.Builder().addNetworkInterceptor(cacheInterceptor)
+      .addInterceptor(loggingInterceptor)
       .build()
 
   @Provides
