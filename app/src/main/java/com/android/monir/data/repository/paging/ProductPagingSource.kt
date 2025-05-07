@@ -36,7 +36,4 @@ class ProductPagingSource @Inject constructor(val api: ProductApi) : PagingSourc
       return LoadResult.Error(e)
     }
   }
-
-  /*override val keyReuseSupported: Boolean
-    get() = true*/
 }

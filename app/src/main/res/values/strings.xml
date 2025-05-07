@@ -1,4 +1,5 @@
 <resources>
   <string name="app_name">AndroidMonir</string>
   <string name="thumbnail">Product Thumbnail</string>
+  <string name="rating">Rating</string>
 </resources>
