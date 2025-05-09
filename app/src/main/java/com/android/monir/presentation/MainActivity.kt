@@ -28,9 +28,7 @@ class MainActivity : ComponentActivity() {
     enableEdgeToEdge()
     setContent {
       AndroidMonirTheme {
-        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-          ProductListScreen(modifier = Modifier.padding(innerPadding))
-        }
+        ProductListScreen()
       }
     }
   }
