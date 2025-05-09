@@ -54,7 +54,6 @@ fun ProductListItem(product: Product, modifier: Modifier = Modifier) {
           placeholder = painterResource(R.drawable.ic_launcher_foreground),
           error = painterResource(R.drawable.ic_launcher_foreground),
           contentDescription = stringResource(R.string.thumbnail),
-          contentScale = ContentScale.Crop,
           modifier = Modifier
             .fillMaxWidth()
             .height(180.dp),
