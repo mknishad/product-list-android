@@ -100,6 +100,16 @@ fun ProductListScreen(
       if (productPagingItems.loadState.refresh is LoadState.Loading) {
         CircularProgressIndicator(modifier = Modifier.padding(16.dp))
       }
+      if (productPagingItems.itemCount == 0) {
+        Text(
+          text = "No product found!",
+          textAlign = TextAlign.Center,
+          modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp)
+            .align(Alignment.Center)
+        )
+      }
     }
   }
 }
