@@ -59,9 +59,14 @@ fun ProductListItem(product: Product, modifier: Modifier = Modifier) {
             .height(180.dp),
         )
         Card(
-          modifier = Modifier.align(Alignment.TopEnd).padding(8.dp),
-          shape = RoundedCornerShape(16),
-          colors = CardDefaults.cardColors(containerColor = Color.White),
+          modifier = Modifier.align(Alignment.TopEnd),
+          shape = RoundedCornerShape(
+            topStart = 0.dp,
+            topEnd = 0.dp,
+            bottomStart = 8.dp,
+            bottomEnd = 0.dp
+          ),
+          colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
         ) {
           Text(
             text = product.category,
@@ -80,20 +85,23 @@ fun ProductListItem(product: Product, modifier: Modifier = Modifier) {
       ) {
         Text(
           text = product.title,
-          style = MaterialTheme.typography.headlineSmall,
+          style = MaterialTheme.typography.titleMedium,
           overflow = TextOverflow.Ellipsis
         )
       }
-      Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+      Row(
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+      ) {
         Text(
-          text = "\$${product.price - (product.price * product.discountPercentage / 100)}",
+          text = "$%.2f".format(product.price - (product.price * product.discountPercentage / 100)),
           style = MaterialTheme.typography.bodyLarge,
           overflow = TextOverflow.Ellipsis
         )
         Spacer(modifier = Modifier.width(16.dp))
         if (product.discountPercentage > 0) {
           Text(
-            text = "\$${product.price}",
+            text = "$%.2f".format(product.price),
             style = TextStyle(textDecoration = TextDecoration.LineThrough, fontSize = 14.sp),
             overflow = TextOverflow.Ellipsis
           )
