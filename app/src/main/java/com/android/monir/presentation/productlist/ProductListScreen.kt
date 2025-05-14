@@ -1,14 +1,18 @@
 package com.android.monir.presentation.productlist
 
+import android.media.midi.MidiDeviceInfo
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -74,16 +78,24 @@ fun ProductListScreen(
         }
       }
       if (productPagingItems.loadState.refresh is LoadState.Error) {
-        Text(
-          text = (productPagingItems.loadState.refresh as LoadState.Error).error.localizedMessage
-            ?: "An unexpected error occurs!",
-          color = MaterialTheme.colorScheme.error,
-          textAlign = TextAlign.Center,
+        Column(
           modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
-            .align(Alignment.Center)
-        )
+            .align(Alignment.Center),
+          horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+          Text(
+            text = (productPagingItems.loadState.refresh as LoadState.Error).error.localizedMessage
+              ?: "An unexpected error occurs!",
+            color = MaterialTheme.colorScheme.error,
+            textAlign = TextAlign.Center
+          )
+          Spacer(modifier = Modifier.height(16.dp))
+          OutlinedButton(onClick = { viewModel.onEvent(ProductListEvent.Retry) }) {
+            Text("Retry")
+          }
+        }
       }
       if (productPagingItems.loadState.refresh is LoadState.Loading) {
         CircularProgressIndicator(modifier = Modifier.padding(16.dp))

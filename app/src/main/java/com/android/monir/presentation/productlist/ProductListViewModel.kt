@@ -22,8 +22,22 @@ class ProductListViewModel @Inject constructor(private val getProductsUseCase: G
   val productListState: StateFlow<PagingData<Product>> = _productListState
 
   init {
-    viewModelScope.launch {
-      getProducts()
+    onEvent(ProductListEvent.Retry)
+  }
+
+  fun onEvent(event: ProductListEvent) {
+    when (event) {
+      is ProductListEvent.Retry -> {
+        viewModelScope.launch {
+          getProducts()
+        }
+      }
+
+      is ProductListEvent.PullToRefresh -> {
+        viewModelScope.launch {
+          getProducts()
+        }
+      }
     }
   }
 
