@@ -1,6 +1,5 @@
 package com.android.monir.presentation.productlist
 
-import android.media.midi.MidiDeviceInfo
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,17 +15,15 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.BlendMode.Companion.Screen
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -36,8 +33,7 @@ import com.android.monir.domain.model.Product
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductListScreen(
-  modifier: Modifier = Modifier,
-  viewModel: ProductListViewModel = hiltViewModel()
+  modifier: Modifier = Modifier, viewModel: ProductListViewModel = hiltViewModel()
 ) {
   val productPagingItems: LazyPagingItems<Product> =
     viewModel.productListState.collectAsLazyPagingItems()
@@ -52,26 +48,31 @@ fun ProductListScreen(
         .fillMaxSize()
         .padding(paddingValues), contentAlignment = Alignment.Center
     ) {
-      Column {
-        LazyColumn(
-          modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-          items(productPagingItems.itemCount) { index ->
-            val productItem = productPagingItems[index]
-            if (productItem != null) {
-              ProductListItem(
-                product = productItem,
-                modifier = Modifier
-                  .fillMaxWidth()
-                  .padding(horizontal = 16.dp, vertical = 8.dp)
-              )
+      PullToRefreshBox(
+        isRefreshing = productPagingItems.loadState.refresh is LoadState.Loading,
+        onRefresh = { viewModel.onEvent(ProductListEvent.Refresh) }
+      ) {
+        Column {
+          LazyColumn(
+            modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
+          ) {
+            items(productPagingItems.itemCount) { index ->
+              val productItem = productPagingItems[index]
+              if (productItem != null) {
+                ProductListItem(
+                  product = productItem,
+                  modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                )
+              }
             }
-          }
 
-          item {
-            if (productPagingItems.loadState.append is LoadState.Loading) {
-              Box(modifier = Modifier.padding(16.dp)) {
-                CircularProgressIndicator()
+            item {
+              if (productPagingItems.loadState.append is LoadState.Loading) {
+                Box(modifier = Modifier.padding(16.dp)) {
+                  CircularProgressIndicator()
+                }
               }
             }
           }
@@ -92,7 +93,7 @@ fun ProductListScreen(
             textAlign = TextAlign.Center
           )
           Spacer(modifier = Modifier.height(16.dp))
-          OutlinedButton(onClick = { viewModel.onEvent(ProductListEvent.Retry) }) {
+          OutlinedButton(onClick = { viewModel.onEvent(ProductListEvent.Refresh) }) {
             Text("Retry")
           }
         }
@@ -100,7 +101,10 @@ fun ProductListScreen(
       if (productPagingItems.loadState.refresh is LoadState.Loading) {
         CircularProgressIndicator(modifier = Modifier.padding(16.dp))
       }
-      if (productPagingItems.itemCount == 0 && productPagingItems.loadState.refresh !is LoadState.Loading) {
+      if (productPagingItems.itemCount == 0
+        && productPagingItems.loadState.refresh !is LoadState.Loading
+        && productPagingItems.loadState.refresh !is LoadState.Error
+      ) {
         Text(
           text = "No product found!",
           textAlign = TextAlign.Center,
