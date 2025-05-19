@@ -63,7 +63,7 @@ fun ProductListItem(product: Product, modifier: Modifier = Modifier) {
           shape = RoundedCornerShape(
             topStart = 0.dp,
             topEnd = 0.dp,
-            bottomStart = 8.dp,
+            bottomStart = 12.dp,
             bottomEnd = 0.dp
           ),
           colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
@@ -71,7 +71,7 @@ fun ProductListItem(product: Product, modifier: Modifier = Modifier) {
           Text(
             text = product.category,
             style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
           )
         }
       }
